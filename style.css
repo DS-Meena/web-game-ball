@@ -1,0 +1,53 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: darkkhaki;
+}
+
+.game-container {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    border: 2px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.bat {
+    width: 20px;
+    height: 100px;
+    position: absolute;
+}
+
+#playerBat {
+    background-color: firebrick;
+    left: 0px;
+}
+
+#opponentBat {
+    background-color: rgb(62, 62, 239);
+    right: 0px;
+}
+
+.ball {
+    width: 20px;
+    height: 20px;
+    z-index: 32;
+    background-color: rgb(255, 115, 0);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.score {
+    position: absolute;
+    font-size: large;
+    top: 5%;
+}
