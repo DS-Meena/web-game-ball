@@ -5,7 +5,7 @@ let ballspeedY = 5;
 let action = 2;
 let opponentPosition = 50;
 
-function updateGame() {
+async function updateGame() {
     // move ball
     ballX += ballSpeedX;
     ballY += ballspeedY;
@@ -15,27 +15,9 @@ function updateGame() {
     let topBoundary = 0;
     let bottomBoundary = rect.height;
 
-    // get opponent's action
-    var action = getAction();
-    console.log("This action is got from opponent ", action)
-    
-    console.log(opponentBat)
-    let opponentPosition = parseInt(opponentBat.style.top) || 50;
+    await updateOpponentPosition();
 
-    // Check if opponentPosition is a valid number
-    if (!isNaN(opponentPosition)) {
-        if (action == 1) {
-            opponentPosition = opponentPosition - 1;
-        } else {
-            opponentPosition = opponentPosition + 1;
-        }
-
-        // Move opponent bat
-        opponentBat.style.top = `${Math.min(rect.height - 102, Math.max(0, opponentPosition))}px`;
-    } else {
-        console.error("Error: Invalid opponentPosition");
-    }
-
+    console.log("opponent position is ", opponentBat.style.top)
     // opponentBat.style.top = `${Math.min(rect.height - 102, Math.max(0, ballY - 50))}px`;
 
     // ball collision with walls
@@ -76,11 +58,12 @@ function updateGame() {
     // update score
     scoreDisplay.textContent = `${playerScore} - ${opponentScore}`;
 
-    if (opponentScore < 1 && playerScore < 1) {
+    
+    await sendRewardPenalty(reward, penalty);
+
+    if (opponentScore < 10 && playerScore < 10) {
         requestAnimationFrame(updateGame);
     }
-
-    sendRewardPenalty(reward, penalty);
 }
  
 function resetBall() {

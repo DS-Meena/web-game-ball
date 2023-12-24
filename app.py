@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 import numpy as np
 import tensorflow as tf 
 
 app = Flask(__name__)
+CORS(app)
 
 # Assuming I have a trained model
 # model = tf.keras.models.load_model('my_model.h5')
@@ -13,15 +15,13 @@ def get_opponent_action():
     data = request.get_json()
     game_state = np.array(data['gameState'])
 
-    print("So at least request came to this point, game state is ", game_state)
-
     # preprocessed_state = preprocess_state(game_state)
 
     # action = model.predict(np.expand_dims(preprocessed_state, axis=0))[0]
 
     # formatted_action = postprocess_action(action)
 
-    action = np.random(1, 2)
+    action = 3 # np.random.randint(1, 3)
 
     return jsonify({'action': action})
 
@@ -53,8 +53,8 @@ def update_agent(reward, penalty):
 
 @app.route('/')
 def index():
-    print("You here")
+    print("xxxxxxxxxxxxxxxxxxxxx you in index")
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(port=5500)
+    app.run(port=5500, debug=True)
