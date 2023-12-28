@@ -4,6 +4,8 @@ let ballSpeedX = 5;
 let ballspeedY = 5;
 let action = 2;
 let opponentPosition = 50;
+let reward = 0;
+let penalty = 0;
 
 async function updateGame() {
     // move ball
@@ -15,17 +17,14 @@ async function updateGame() {
     let topBoundary = 0;
     let bottomBoundary = rect.height;
 
-    await updateOpponentPosition();
-
     console.log("opponent position is ", opponentBat.style.top)
     // opponentBat.style.top = `${Math.min(rect.height - 102, Math.max(0, ballY - 50))}px`;
+    playerBat.style.top = `${Math.min(rect.height, Math.max(0, ballY - 50))}px`;
 
     // ball collision with walls
     if (ballY <= topBoundary || ballY >= bottomBoundary) {
         ballspeedY *= -1;
     }
-
-    let reward = 0, penalty = 0;
 
     // ball collision with bats
     if (
@@ -34,8 +33,18 @@ async function updateGame() {
     ) {
         ballSpeedX *= -1;
 
-        if (ballX >= rightBoundary - 20 && ballX <= rightBoundary && ballY >= parseInt(opponentBat.style.top) && ballY <= parseInt(opponentBat.style.top) + 100) {
-            reward += 2;
+        if (ballX <= leftBoundary + 20) {
+            // came to next state
+            await sendRewardPenalty(reward, penalty);
+            reward, penalty = 0, 0
+
+            // now update agent bat
+            console.log("Now updating agent position")
+            await updateOpponentPosition();
+            
+        } else {
+            console.log("Award given to agent")
+            reward += 2
         }
     }
 
@@ -58,9 +67,6 @@ async function updateGame() {
     // update score
     scoreDisplay.textContent = `${playerScore} - ${opponentScore}`;
 
-    
-    await sendRewardPenalty(reward, penalty);
-
     if (opponentScore < 10 && playerScore < 10) {
         requestAnimationFrame(updateGame);
     }
@@ -74,10 +80,10 @@ function resetBall() {
 }
 
 // Handle player bat moment
-document.addEventListener('mousemove', (e) => {
-    let bottom = rect.height - 102
-    playerBat.style.top = `${Math.min(bottom, Math.max(0, e.clientY - 50))}px`;
-});
+// document.addEventListener('mousemove', (e) => {
+//     let bottom = rect.height - 102
+//     playerBat.style.top = `${Math.min(bottom, Math.max(0, e.clientY - 50))}px`;
+// });
 
 // start the game loop
 updateGame();

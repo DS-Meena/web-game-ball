@@ -55,11 +55,8 @@ async function updateOpponentPosition() {
 
     // Check if opponentPosition is a valid number
     if (!isNaN(opponentPosition)) {
-        if (action == 1) {
-            opponentPosition = opponentPosition - 10;
-        } else {
-            opponentPosition = opponentPosition + 50;
-        }
+
+        opponentPosition = opponentPosition + action
 
         // Move opponent bat
         opponentBat.style.top = `${Math.min(rect.height - 102, Math.max(0, opponentPosition))}px`;
@@ -70,6 +67,7 @@ async function updateOpponentPosition() {
 
 // function to send reward or penalty
 async function sendRewardPenalty(reward, penalty) {
+    gameState = getGameState();
 
     try {
         const response = await fetch('http://localhost:5500/update_reward_penalty', {
@@ -77,7 +75,7 @@ async function sendRewardPenalty(reward, penalty) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ reward, penalty }),
+            body: JSON.stringify({ reward, penalty , gameState}),
         });
 
         console.log("Send reward and penalty", response);
