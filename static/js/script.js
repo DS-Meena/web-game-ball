@@ -1,6 +1,6 @@
 const scoreDisplay = document.getElementById('score');
 
-let ballSpeedX = 5;
+let ballSpeedX = -5;
 let ballspeedY = 5;
 let action = 2;
 let opponentPosition = 50;
@@ -35,8 +35,10 @@ async function updateGame() {
 
         if (ballX <= leftBoundary + 20) {
             // came to next state
+            console.log("Award and penalty are ", reward, penalty)
             await sendRewardPenalty(reward, penalty);
-            reward, penalty = 0, 0
+            reward = 0
+            penalty = 0
 
             // now update agent bat
             console.log("Now updating agent position")
@@ -55,7 +57,15 @@ async function updateGame() {
             reward += 5;
         } else {
             playerScore++;
-            penalty += 5;
+
+            // distance between ball and bat
+            dist = ballY - parseInt(opponentBat.style.top);
+            if (dist < 0) {
+                dist *= -1
+            }
+
+            console.log("Distance is ", dist)
+            penalty += dist;
         }
         resetBall();
     }
@@ -75,8 +85,11 @@ async function updateGame() {
 function resetBall() {
     ballX = rect.width/2;
     ballY = rect.height/2;
-    ballSpeedX = -ballSpeedX;
-    ballspeedY = -ballspeedY;
+    ballSpeedX = ballSpeedX;
+    if (ballSpeedX > 0) {
+        ballSpeedX *= -1
+    } 
+    ballspeedY = ballspeedY;
 }
 
 // Handle player bat moment

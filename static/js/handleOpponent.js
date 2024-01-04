@@ -8,19 +8,24 @@ let ballX = rect.width/2;
 let ballY = rect.height/2;
 let playerScore = 0;
 let opponentScore = 0;
+let prev_state = [0, 0, 0, 0, 0, 0, 0]
+let prev_action = [0]
 
 let gameState = getGameState();
 
 function getGameState() {
-    return {
-        'ballX': ballX,
-        'ballY': ballY,
-        'scoreDifference': playerScore - opponentScore,
-        'groundWidth': rect.width,
-        'groundHeight': rect.height,
-        'playerBat': playerBat.style.top,
-        'opponentBat': opponentBat.style.top
+    x = parseFloat(ballX)
+    y = parseFloat(ballY)
+    width = parseFloat(rect.width)
+    height = parseFloat(rect.height)
+    playerPos = parseFloat(playerBat.style.top)
+    console.log("Opponent position is -------- ", opponentBat.style.top)
+    agentPos = parseFloat(opponentBat.style.top)
+    if (!agentPos) {
+        agentPos = 0
     }
+
+    return [x, y, parseFloat(playerScore - opponentScore),width, height, playerPos, agentPos]
 }
 
 async function getAction() {
@@ -40,6 +45,10 @@ async function getAction() {
         const data = await response.json();
         console.log("We got action", data);
         opponentAction = data.action;
+        prev_state = data.prev_state
+        prev_action = data.prev_action
+
+        console.log("inside get action ", prev_state, prev_action)
     } catch (error) {
         console.error('Error:', error);
     }
@@ -56,7 +65,7 @@ async function updateOpponentPosition() {
     // Check if opponentPosition is a valid number
     if (!isNaN(opponentPosition)) {
 
-        opponentPosition = opponentPosition + action
+        opponentPosition = opponentPosition + action + 100
 
         // Move opponent bat
         opponentBat.style.top = `${Math.min(rect.height - 102, Math.max(0, opponentPosition))}px`;
@@ -75,7 +84,7 @@ async function sendRewardPenalty(reward, penalty) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ reward, penalty , gameState}),
+            body: JSON.stringify({ reward, penalty , gameState, prev_state, prev_action}),
         });
 
         console.log("Send reward and penalty", response);

@@ -1,30 +1,41 @@
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras import layers, models, optimizers
 
 # Define the Actor and Critic networks
-class Actor(tf.models.Model):
+class Actor(tf.keras.Model):
     def __init__(self, state_dim, max_action):
         super(Actor, self).__init__()
-        self.fc1 = tf.layers.Dense(64, activation='relu')
-        self.fc2 = tf.layers.Dense(64, activation='relu')
-        self.out = tf.layers.Dense(1, activation='tanh')  # output range: [-1, 1]
+        self.fc1 = layers.Dense(64, activation='relu')
+        self.fc2 = layers.Dense(64, activation='relu')
+        self.out = layers.Dense(1, activation='sigmoid')  # output range: [-1, 1]
 
         self.max_action = max_action
     
     def call(self, state):
-        x = self.fc1(state)
+        
+        state_array = np.array([state], dtype=np.float32)
+
+        x = self.fc1(state_array)
         x = self.fc2(x)
+
         action = self.out(x)
+
+        print("action is ", action)
         return self.max_action * action
     
-class Critic(tf.models.Model):
+class Critic(tf.keras.Model):
     def __init__(self, state_dim):
         super(Critic, self).__init__()
-        self.fc1 = tf.layers.Dense(64, activation='relu')
-        self.fc2 = tf.layers.Dense(64, activation='relu')
-        self.out = tf.layers.Dense(1)  # how good is the action
+        self.fc1 = layers.Dense(64, activation='relu')
+        self.fc2 = layers.Dense(64, activation='relu')
+        self.out = layers.Dense(1, activation='sigmoid')  # how good is the action
 
     def call(self, state, action):
+
+        state = np.array([state], dtype=np.float32)
+        action = tf.reshape(action, (-1, 1))
+
         x = tf.concat([state, action], axis=-1)
         x = self.fc1(x)
         x = self.fc2(x)
