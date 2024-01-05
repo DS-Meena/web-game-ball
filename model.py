@@ -6,22 +6,21 @@ from tensorflow.keras import layers, models, optimizers
 class Actor(tf.keras.Model):
     def __init__(self, state_dim, max_action):
         super(Actor, self).__init__()
-        self.fc1 = layers.Dense(64, activation='relu')
-        self.fc2 = layers.Dense(64, activation='relu')
-        self.out = layers.Dense(1, activation='sigmoid')  # output range: [-1, 1]
+        self.fc1 = layers.Dense(64, activation='relu', kernel_initializer='he_normal')
+        self.fc2 = layers.Dense(64, activation='relu', kernel_initializer='he_normal')
+        self.fc3 = layers.Dense(64, activation='relu', kernel_initializer='he_normal')
+        self.out = layers.Dense(1, activation='tanh')  # output range: [-1, 1]
 
         self.max_action = max_action
     
     def call(self, state):
         
         state_array = np.array([state], dtype=np.float32)
-
         x = self.fc1(state_array)
         x = self.fc2(x)
-
+        x = self.fc3(x)
         action = self.out(x)
 
-        print("action is ", action)
         return self.max_action * action
     
 class Critic(tf.keras.Model):

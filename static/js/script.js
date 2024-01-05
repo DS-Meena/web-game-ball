@@ -29,7 +29,7 @@ async function updateGame() {
     // ball collision with bats
     if (
         (ballX <= leftBoundary + 20 && ballX >= leftBoundary && ballY >= parseInt(playerBat.style.top) && ballY <= parseInt(playerBat.style.top) + 100) || 
-        (ballX >= rightBoundary - 20 && ballX <= rightBoundary && ballY >= parseInt(opponentBat.style.top) && ballY <= parseInt(opponentBat.style.top) + 100)
+        (ballX >= rightBoundary - 20 && ballX <= rightBoundary && ballY > parseInt(opponentBat.style.top)+3 && ballY < parseInt(opponentBat.style.top) + 97)
     ) {
         ballSpeedX *= -1;
 
@@ -46,7 +46,7 @@ async function updateGame() {
             
         } else {
             console.log("Award given to agent")
-            reward += 2
+            reward += 1
         }
     }
 
@@ -65,7 +65,7 @@ async function updateGame() {
             }
 
             console.log("Distance is ", dist)
-            penalty += dist;
+            penalty += 2;
         }
         resetBall();
     }
@@ -77,11 +77,11 @@ async function updateGame() {
     // update score
     scoreDisplay.textContent = `${playerScore} - ${opponentScore}`;
 
-    if (opponentScore < 10 && playerScore < 10) {
+    if (opponentScore < maxScore && playerScore < maxScore) {
         requestAnimationFrame(updateGame);
     }
 }
- 
+
 function resetBall() {
     ballX = rect.width/2;
     ballY = rect.height/2;
