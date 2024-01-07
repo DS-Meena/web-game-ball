@@ -6,9 +6,12 @@ const ball = document.getElementById('ball');
 
 let ballX = rect.width/2;
 let ballY = rect.height/2;
+let maxSpeed = 5
+let ballSpeedX = -maxSpeed;
+let ballspeedY = maxSpeed;
 let playerScore = 0;
 let opponentScore = 0;
-let prev_state = [0, 0, 0, 0, 0, 0, 0]
+let prev_state = [0, 0, 0, 0, 0, 0]
 let prev_action = [0]
 let maxScore = 100
 
@@ -17,14 +20,19 @@ let gameState = getGameState();
 function getGameState() {
     x = parseFloat(ballX / rect.width)
     y = parseFloat(ballY / rect.height)
+    vx = parseFloat(ballSpeedX / maxSpeed)
+    vy = parseFloat(ballspeedY / maxSpeed)
+
     width = parseFloat(rect.width)
     height = parseFloat(rect.height)
+    // player position
     playerPos = parseFloat(playerBat.style.top)
     if (!playerPos) {
         playerPos = 0
     } else {
         playerPos = playerPos/width
     }
+    // agent position
     agentPos = parseFloat(opponentBat.style.top)
     if (!agentPos) {
         agentPos = 0
@@ -32,8 +40,8 @@ function getGameState() {
         agentPos = agentPos/width
     }
 
-    console.log([x, y, parseFloat((playerScore - opponentScore)/maxScore),1, 1, playerPos, agentPos])
-    return [x, y, parseFloat((playerScore - opponentScore)/maxScore),1, 1, playerPos, agentPos]
+    console.log([x, y, vx, vy, playerPos, agentPos])
+    return [x, y, vx, vy, playerPos, agentPos]
 }
 
 async function getAction() {
@@ -93,8 +101,6 @@ async function sendRewardPenalty(reward, penalty) {
             },
             body: JSON.stringify({ reward, penalty , gameState, prev_state, prev_action}),
         });
-
-        console.log("Send reward and penalty", response);
     } catch (error) {
         console.error('Error:', error);
     }
