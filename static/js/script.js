@@ -60,9 +60,11 @@ async function updateGame() {
                 dist *= -1
             }
 
-            penalty += 10;
+            penalty += dist;
         }
-        resetBall();
+        
+        ballSpeedX *= -1;
+        // resetBall();
     }
 
     // update ball position

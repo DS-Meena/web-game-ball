@@ -8,7 +8,7 @@ class Actor(tf.keras.Model):
         super(Actor, self).__init__()
         self.fc1 = layers.Dense(64, activation='relu', kernel_initializer='he_normal')
         self.fc2 = layers.Dense(64, activation='relu', kernel_initializer='he_normal')
-        self.out = layers.Dense(1, activation='tanh')  # output range: [-1, 1]
+        self.out = layers.Dense(1, activation='sigmoid')  # output range: [-1, 1]
 
         self.max_action = max_action
     

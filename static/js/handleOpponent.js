@@ -18,26 +18,40 @@ let maxScore = 100
 let gameState = getGameState();
 
 function getGameState() {
-    x = parseFloat(ballX / rect.width)
-    y = parseFloat(ballY / rect.height)
+    width = parseFloat(rect.width)
+    height = parseFloat(rect.height)
+
+    // ball coordinates
+    x = parseFloat(ball.style.left)
+    if (!x) {
+        x = 0
+    } else {
+        x = x / width
+    }
+    y = parseFloat(ball.style.top)
+    if (!y) {
+        y = 0
+    } else {
+        y = y / height;
+    }
+
+    // ball speed
     vx = parseFloat(ballSpeedX / maxSpeed)
     vy = parseFloat(ballspeedY / maxSpeed)
 
-    width = parseFloat(rect.width)
-    height = parseFloat(rect.height)
     // player position
     playerPos = parseFloat(playerBat.style.top)
     if (!playerPos) {
         playerPos = 0
     } else {
-        playerPos = playerPos/width
+        playerPos = playerPos/(height)
     }
     // agent position
     agentPos = parseFloat(opponentBat.style.top)
     if (!agentPos) {
         agentPos = 0
     } else {
-        agentPos = agentPos/width
+        agentPos = agentPos/(height)
     }
 
     console.log([x, y, vx, vy, playerPos, agentPos])
@@ -80,7 +94,7 @@ async function updateOpponentPosition() {
     // Check if opponentPosition is a valid number
     if (!isNaN(opponentPosition)) {
 
-        opponentPosition = opponentPosition + action
+        opponentPosition = action
 
         // Move opponent bat
         opponentBat.style.top = `${Math.min(rect.height - 102, Math.max(0, opponentPosition))}px`;
