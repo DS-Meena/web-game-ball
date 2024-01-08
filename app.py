@@ -4,9 +4,9 @@ import numpy as np
 import tensorflow as tf
 from model import DDPGAgent 
 
-state_dim = 7
-max_action = 100.0
-num_episodes = 500
+state_dim = 6
+max_action = 500.0
+num_episodes = 597
 
 agent = DDPGAgent(state_dim, max_action)
 

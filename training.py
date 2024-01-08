@@ -10,7 +10,7 @@ agent = DDPGAgent(state_dim, max_action)
 # training loop
 for episode in range(num_episodes):
     # get initial state
-    state = [0, 0, 0, 0, 0, 0, 0] 
+    state = [0, 0, 0, 0, 0, 0] 
     done = False
 
     for _ in range(10):

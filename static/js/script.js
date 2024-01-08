@@ -1,7 +1,5 @@
 const scoreDisplay = document.getElementById('score');
 
-let ballSpeedX = -5;
-let ballspeedY = 5;
 let action = 2;
 let opponentPosition = 50;
 let reward = 0;
@@ -19,7 +17,7 @@ async function updateGame() {
 
     console.log("opponent position is ", opponentBat.style.top)
     // opponentBat.style.top = `${Math.min(rect.height - 102, Math.max(0, ballY - 50))}px`;
-    playerBat.style.top = `${Math.min(rect.height, Math.max(0, ballY - 50))}px`;
+    // playerBat.style.top = `${Math.min(rect.height, Math.max(0, ballY - 50))}px`;
 
     // ball collision with walls
     if (ballY <= topBoundary || ballY >= bottomBoundary) {
@@ -41,12 +39,10 @@ async function updateGame() {
             penalty = 0
 
             // now update agent bat
-            console.log("Now updating agent position")
             await updateOpponentPosition();
             
         } else {
-            console.log("Award given to agent")
-            reward += 1
+            reward += 5
         }
     }
 
@@ -54,7 +50,7 @@ async function updateGame() {
     if (ballX <= leftBoundary || ballX >= rightBoundary) {
         if (ballX <= leftBoundary) {
             opponentScore++;
-            reward += 5;
+            reward += 10;
         } else {
             playerScore++;
 
@@ -64,10 +60,11 @@ async function updateGame() {
                 dist *= -1
             }
 
-            console.log("Distance is ", dist)
-            penalty += 2;
+            penalty += dist;
         }
-        resetBall();
+        
+        ballSpeedX *= -1;
+        // resetBall();
     }
 
     // update ball position
@@ -93,10 +90,10 @@ function resetBall() {
 }
 
 // Handle player bat moment
-// document.addEventListener('mousemove', (e) => {
-//     let bottom = rect.height - 102
-//     playerBat.style.top = `${Math.min(bottom, Math.max(0, e.clientY - 50))}px`;
-// });
+document.addEventListener('mousemove', (e) => {
+    let bottom = rect.height - 102
+    playerBat.style.top = `${Math.min(bottom, Math.max(0, e.clientY - 50))}px`;
+});
 
 // start the game loop
 updateGame();
